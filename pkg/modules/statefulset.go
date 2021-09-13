@@ -32,6 +32,7 @@ import (
 	//corev1 "k8s.io/api/core/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -64,12 +65,13 @@ func GenStatefulSet(mg *metagraf.MetaGraf, namespace string) {
 
 	var RevisionHistoryLimit int32 = 5
 
-	var RollingUpdatePartition int32
-	RollingUpdatePartition = 0
+	var PersistentVolumeClaimStorageClass string = "thin"
+	var PersistentVolumeClaimStorageSize string = "50Gi"
+	var PersistentVolumeClaims []corev1.PersistentVolumeClaim
 
 	// Instance of RollingUpdateStatefulSetStrategy
 	rollingParams := appsv1.RollingUpdateStatefulSetStrategy{
-		Partition: &RollingUpdatePartition,
+		// TODO: Add support for setting Partition in metagraf.json
 	}
 
 	// Containers
@@ -178,6 +180,32 @@ func GenStatefulSet(mg *metagraf.MetaGraf, namespace string) {
 
 	if params.WithAffinityRules {
 		obj.Spec.Template.Spec.Affinity = affinity.SoftPodAntiAffinity(objname, params.PodAntiAffinityTopologyKey, params.PodAntiAffinityWeight)
+	}
+
+	if len(mg.Spec.PersistentVolumeClaimStorageClass) > 0 {
+		PersistentVolumeClaimStorageClass = mg.Spec.PersistentVolumeClaimStorageClass
+	}
+	if len(mg.Spec.PersistentVolumeClaimStorageSize) > 0 {
+		PersistentVolumeClaimStorageSize = mg.Spec.PersistentVolumeClaimStorageSize
+	}
+
+	if params.CreateStatefulSetPersistentVolumeClaim {
+		pvclaim := corev1.PersistentVolumeClaim{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: objname,
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes:      []corev1.PersistentVolumeAccessMode{corev1.ReadWriteMany},
+				StorageClassName: &PersistentVolumeClaimStorageClass,
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						corev1.ResourceStorage: resource.MustParse(PersistentVolumeClaimStorageSize),
+					},
+				},
+			},
+		}
+		PersistentVolumeClaims = append(PersistentVolumeClaims, pvclaim)
+		obj.Spec.VolumeClaimTemplates = PersistentVolumeClaims
 	}
 
 	if !Dryrun {

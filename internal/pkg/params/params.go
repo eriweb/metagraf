@@ -98,4 +98,5 @@ var (
 	// String to hold a container image name override
 	ImageName string
 
+	CreateStatefulSetPersistentVolumeClaim bool = false
 )

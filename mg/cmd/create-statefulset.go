@@ -31,12 +31,13 @@ func init() {
 	createStatefulsetCmd.Flags().StringVar(&params.PodAntiAffinityTopologyKey, "anti-affinity-topology-key", "", "Define which node label to use as a topologyKey (describing a datacenter, zone or a rack as an example)")
 	createStatefulsetCmd.Flags().Int32Var(&params.PodAntiAffinityWeight, "pod-anti-affinity-weight", params.PodAntiAffinityWeightDefault, "Weight for WeightedPodAffinityTerm.")
 	createStatefulsetCmd.Flags().BoolVar(&params.DownwardAPIEnvVars, "downward-api-envvars", false, "Enables generation of environment variables from Downward API. An opinionated selection.")
+	createStatefulsetCmd.Flags().BoolVar(&params.CreateStatefulSetPersistentVolumeClaim, "create-persistent-volumeclaim", false, "Enables the creation of a persistent volume claims template.")
 }
 
 var createStatefulsetCmd = &cobra.Command{
 	Use:   "statefulset <metagraf>",
-	Short: "create Statefulset from metaGraf file",
-	Long:  MGBanner + `create Statefulset`,
+	Short: "create StatefulSet from metaGraf file",
+	Long:  MGBanner + `create StatefulSet`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
 			log.Info(StrActiveProject, viper.Get("namespace"))
