@@ -65,8 +65,6 @@ func GenStatefulSet(mg *metagraf.MetaGraf, namespace string) {
 
 	var RevisionHistoryLimit int32 = 5
 
-	var PersistentVolumeClaimStorageClass string = "thin"
-	var PersistentVolumeClaimStorageSize string = "50Gi"
 	var PersistentVolumeClaims []corev1.PersistentVolumeClaim
 
 	// Instance of RollingUpdateStatefulSetStrategy
@@ -182,13 +180,6 @@ func GenStatefulSet(mg *metagraf.MetaGraf, namespace string) {
 		obj.Spec.Template.Spec.Affinity = affinity.SoftPodAntiAffinity(objname, params.PodAntiAffinityTopologyKey, params.PodAntiAffinityWeight)
 	}
 
-	if len(mg.Spec.PersistentVolumeClaimStorageClass) > 0 {
-		PersistentVolumeClaimStorageClass = mg.Spec.PersistentVolumeClaimStorageClass
-	}
-	if len(mg.Spec.PersistentVolumeClaimStorageSize) > 0 {
-		PersistentVolumeClaimStorageSize = mg.Spec.PersistentVolumeClaimStorageSize
-	}
-
 	if params.CreateStatefulSetPersistentVolumeClaim {
 		pvclaim := corev1.PersistentVolumeClaim{
 			ObjectMeta: metav1.ObjectMeta{
@@ -196,10 +187,10 @@ func GenStatefulSet(mg *metagraf.MetaGraf, namespace string) {
 			},
 			Spec: corev1.PersistentVolumeClaimSpec{
 				AccessModes:      []corev1.PersistentVolumeAccessMode{corev1.ReadWriteMany},
-				StorageClassName: &PersistentVolumeClaimStorageClass,
+				StorageClassName: &params.StatefulSetPersistentVolumeClaimStorageClass,
 				Resources: corev1.ResourceRequirements{
 					Requests: corev1.ResourceList{
-						corev1.ResourceStorage: resource.MustParse(PersistentVolumeClaimStorageSize),
+						corev1.ResourceStorage: resource.MustParse(params.StatefulSetPersistentVolumeClaimSize),
 					},
 				},
 			},

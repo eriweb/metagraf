@@ -32,6 +32,8 @@ func init() {
 	createStatefulsetCmd.Flags().Int32Var(&params.PodAntiAffinityWeight, "pod-anti-affinity-weight", params.PodAntiAffinityWeightDefault, "Weight for WeightedPodAffinityTerm.")
 	createStatefulsetCmd.Flags().BoolVar(&params.DownwardAPIEnvVars, "downward-api-envvars", false, "Enables generation of environment variables from Downward API. An opinionated selection.")
 	createStatefulsetCmd.Flags().BoolVar(&params.CreateStatefulSetPersistentVolumeClaim, "create-persistent-volumeclaim", false, "Enables the creation of a persistent volume claims template.")
+	createStatefulsetCmd.Flags().StringVar(&params.StatefulSetPersistentVolumeClaimStorageClass, "statefulset-pv-storageclass", "", "StatefulSet persistent volume claim storage class")
+	createStatefulsetCmd.Flags().StringVar(&params.StatefulSetPersistentVolumeClaimSize, "statefulset-pv-size", "", "StatefulSet persistent volume claim size")
 }
 
 var createStatefulsetCmd = &cobra.Command{
