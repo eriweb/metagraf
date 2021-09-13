@@ -1,5 +1,5 @@
 /*
-Copyright 2018-2020 The metaGraf Authors
+Copyright 2021 The metaGraf Authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package helpers
+package metagraf
 
-/*
-func TestSkopeoImageInfo(t *testing.T) {
-	expected := "/dgraph"
-	image := "docker.io/dgraph/dgraph"
-	imageinfo := SkopeoImageInfo(image)
-	actual := imageinfo.Config.WorkingDir
-	if actual != expected {
-		t.Errorf("Test failed, expected: '%v', got:  '%v'", expected, actual)
+
+func (mg MetaGraf) GetDockerImageURL() string {
+	var DockerImage string
+	if len(mg.Spec.BaseRunImage) > 0 {
+		DockerImage = mg.Spec.BaseRunImage
+	} else if len(mg.Spec.BuildImage) > 0 {
+		DockerImage = mg.Spec.BuildImage
+	} else {
+		DockerImage = mg.Spec.Image
 	}
+	return DockerImage
 }
-*/
+
+
