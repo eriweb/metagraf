@@ -39,9 +39,9 @@ jobs:
       -
         name: set variables
         run: |
-          export GITHASH=$(git rev-parse --short HEAD)
-          export GITTAG=$(git tag -l --points-at HEAD)
-          export GITBRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "GITHASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "GITTAG=$(git tag -l --points-at HEAD)" >> $GITHUB_ENV
+          echo "GITBRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
