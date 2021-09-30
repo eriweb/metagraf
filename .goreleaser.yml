@@ -8,59 +8,25 @@ before:
     - go mod tidy
     - go vet -v ./...
     - go test ./...
+
 builds:
   -
-    id: "mg-linux"
-    dir: mg
     binary: mg
+    goos:
+    - windows
+    - darwin
+    - linux
+    goarch:
+    - "386"
+    - "amd64"
     env:
     - CGO_ENABLED=0
-    - GITHASH=$(git rev-parse --short HEAD)
-    - GITTAG=$(git tag -l --points-at HEAD)
-    - GITBRANCH=$(git rev-parse --abbrev-ref HEAD) 
-    goos:
-      - linux
-    goarch:
-      - amd64
     ldflags:
-      - -extldflags '-static'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitHash={{.Env.GITHASH}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitTag={{.Env.GITTAG}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitBranch={{.Env.GITBRANCH}}'
-  -
-    id: "mg-darwin"
-    dir: mg
-    binary: mg
-    env:
-      - CGO_ENABLED=0
-      - GITHASH=$(git rev-parse --short HEAD)
-      - GITTAG=$(git tag -l --points-at HEAD)
-      - GITBRANCH=$(git rev-parse --abbrev-ref HEAD)
-    goos:
-      - darwin
-    goarch:
-      - amd64
-    ldflags:
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitHash={{.Env.GITHASH}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitTag={{.Env.GITTAG}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitBranch={{.Env.GITBRANCH}}'
-  -
-    id: "mg-win"
-    dir: mg
-    binary: mg
-    env:
-      - CGO_ENABLED=0
-      - GITHASH=$(git rev-parse --short HEAD)
-      - GITTAG=$(git tag -l --points-at HEAD)
-      - GITBRANCH=$(git rev-parse --abbrev-ref HEAD)
-    goos:
-      - windows
-    goarch:
-      - amd64
-    ldflags:
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitHash={{.Env.GITHASH}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitTag={{.Env.GITTAG}}'
-      - -X 'github.com/laetho/metagraf/pkg/mgver.GitBranch={{.Env.GITBRANCH}}'
+    - -extldflags '-static'
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitHash=$(git rev-parse --short HEAD)"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitTag=$(git tag -l --points-at HEAD)"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitBranch=$(git rev-parse --abbrev-ref HEAD)"
+
 dockers:
   -
     goos: linux
@@ -97,3 +63,10 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+
+brews:
+- name: metagraf
+  tap:
+    owner: terbolous
+    name: metagraf-tap
+    token: "{{ .Env.GITHUB_TOKEN }}"
