@@ -26,7 +26,7 @@ builds:
     - -extldflags '-static'
     - -X "github.com/laetho/metagraf/pkg/mgver.GitHash={{ .Env.GITHASH }}"
     - -X "github.com/laetho/metagraf/pkg/mgver.GitTag={{ .Env.GITTAG }}"
-    - -X "github.com/laetho/metagraf/pkg/mgver.GitBranch={{ .ENV.GITBRANCH }}"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitBranch={{ .Env.GITBRANCH }}"
 
 dockers:
   -
