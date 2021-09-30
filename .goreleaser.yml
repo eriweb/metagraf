@@ -12,6 +12,7 @@ before:
 builds:
   -
     binary: mg
+    dir: mg
     goos:
     - windows
     - darwin
