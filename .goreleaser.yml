@@ -24,9 +24,9 @@ builds:
     - CGO_ENABLED=0
     ldflags:
     - -extldflags '-static'
-    - -X "github.com/laetho/metagraf/pkg/mgver.GitHash=$(git rev-parse --short HEAD)"
-    - -X "github.com/laetho/metagraf/pkg/mgver.GitTag=$(git tag -l --points-at HEAD)"
-    - -X "github.com/laetho/metagraf/pkg/mgver.GitBranch=$(git rev-parse --abbrev-ref HEAD)"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitHash={{ .Env.GITHASH }}"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitTag={{ .Env.GITTAG }}"
+    - -X "github.com/laetho/metagraf/pkg/mgver.GitBranch={{ .ENV.GITBRANCH }}"
 
 dockers:
   -
